@@ -1,0 +1,663 @@
+\documentclass[a4paper, 10pt]{article}
+\usepackage[spanish] {babel}
+\title{Trabajo Practico 1}
+\usepackage{tpalgo3}
+\usepackage{caratula}
+\usepackage{amssymb}
+\usepackage[pdftex]{graphicx}
+
+\setlength{\leftmargin}{2cm}
+\setlength{\rightmargin}{2cm}
+\setlength{\oddsidemargin}{-1cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\topmargin}{-1cm}
+\setlength{\textwidth}{18cm}
+\setlength{\textheight}{25cm}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead [L]{\scriptsize Trabajo Pr\'actico N$^{\circ}$1}
+\fancyhead [R]{\scriptsize Bottaro, Nahabedian, Mataloni}%1{20pt}
+\fancyfoot[C]{\thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+\materia{Algoritmos y Estructuras de Datos III}
+\submateria{Primer Cuatrimestre de 2010}
+\titulo{Trabajo Practico N$^{\circ}$1}
+\grupo{Grupo}
+\integrante{Mataloni Alejandro}{706/07}{amataloni@gmail.com}
+\integrante{Nahabedian Leandro Ezequiel}{250/08}{leanahabedian@gmail.com}
+\integrante{Bottaro Juan Pablo}{552/09}{jpbottaro@gmail.com}
+\maketitle
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Ejercicio 1}
+
+\subsection{Enunciado}
+Dados b, n $\in$ N, calcular $b^n$ mod $n$.
+
+\subsection{Introducci\'on}
+
+Cuando se presenta este problema, la manera mas directa de hacer el c\'alculo parecer\'ia ser multiplicar el n\'umero
+sucesivas veces, tomando el resto en cada paso, hasta agotar $n$. Pero se pide mejorar la complejidad lineal, y este
+m\'etodo no lo logra. Nuestra idea fue acortar la cantidad de veces que multiplicabamos el numero, buscando reducir la
+cantidad de operaciones a algo logaritmico, partiendo la potencia en dos y calculando solo una ellas.
+
+
+\subsection{Desarrollo de la Soluci\'on}
+
+La idea que surge fue reducir la cantidad de multiplicaciones necesarias para elevar un n\'umero. Una identidad simple
+afirma que:
+\begin{center}
+$b^n = (b^{n/2})^2$ para $n$ par, o $b^n = (b^{(n-1)/2})^2 * b$ con n impar.
+\end{center}
+
+Usando el m\'etodo enunciado, podemos computar
+$b^{n/2}$ una sola vez, y elevarlo al cuadrado, reduciendo la cantidad de operaciones a la mitad aproximadamente.
+Aplicando recursivamente este m\'etodo logramos mejorar la complejidad, con orden logar\'itmico.
+
+Como este numero puede volverse demasiado grande, procedemos a calcularle el modulo en cada iteracion. Es importante aclarar que,
+seg\'un las propiedades de la congruencia, si $a_1 \equiv \  b_1\  (mod\ n)$ y $a_2 \equiv \  b_2\  (mod\ n)$, entonces
+$(a_1 a_2) \equiv \  (b_1 b_2)\   (mod\ n$). En este caso particular $a_1 = a_2 = a$ luego $a \equiv b \ (mod\ n) \Rightarrow a^2 \equiv b^2 \ (mod\ n$).
+
+En la implementaci\'on de la soluci\'on utilizamos una sola funci\'on, $generarModulo()$, que se invoca con los dos n\'umeros $b$ y
+$n$ (mas un tercero, $n$ nuevamente, que se utiliza para mantener el $n$ original en las sucesivas llamadas recursivas). La
+idea del algoritmo corresponde al m\'etodo Divide and Conquer, se divide la $n$ en dos, y se llama nuevamente a
+la funci\'on $generarModulo()$ para una de las partes. Repetimos este paso hasta llegar al caso base, o $n\ =\ 1$, y luego
+procedemos a multiplicar las mitades, tomando modulo en cada caso con el $n$ original, hasta llegar al n\'umero inicial.
+
+
+\subsubsection{Descripci\'on y Correctitud de los Algoritmos}
+
+{\bf generarModulo}: Dados dos n\'umeros $b$ y $n$, queremos calcular $b^n$ mod $n$. Dividimos n por 2 (si es impar le restamos
+uno antes de hacerlo), y procedemos a calcular $generarModulo()$ para estos nuevos valores $b$ y $n/2$ (o $(n-1)/2$). Cuando
+vuelve esta funci\'on, procedemos a multiplicar por si mismo el valor de retorno (es decir, obtenemos $(b^{n/2})^2 = b^n$),
+nos quedamos con su resto m\'odulo $n$, y lo devolvemos. En el caso de que $n$ es impar, multiplicamos este resultado por
+$b$ (es decir, $(b^{(n-1)/2})^2 * b = b^n$).
+Hay que tener en cuenta que el $n$ original se mantiene como un par\'ametro de la funci\'on en las sucesivas llamadas
+recursivas, ya que lo necesitamos para obtener el resto m\'odulo $n$. \\
+
+{\bf resto}: dados dos n\'umeros $b$ y $n$, devuelve el resto  $r$ de la divisi\'on $b/n$ realizando el c\'alculo $r = a - b *
+floor(a/b)$. Probar esta formula es simple, segun el teorema fundamental de la aritm\'etica: \\
+
+$\exists! \: q,r \in \mathbb{Z}$ con $0 \leq r < b \;$ / $ \; a = q * b + r \Rightarrow a/b = q + r/b$\\
+
+Pero como $q \in \mathbb{Z}$ y $0 \leq r/b < 1$ por ser $r < b$ y ambos positivos, tenemos que efectivamente
+$floor(a/b)$ es la parte entera de $q + r/b$, osea $q$. Volviendo a la ecuacion original tenemos: \\
+
+$a - b * floor(a/b) = a - b * q = r$\\
+
+\newpage
+
+\subsection{Pseudoc\'odigo}
+
+\nuevoAlgo{Algoritmo 1}{generarModulo ($b \in \mathbb{N}$, $power \in \mathbb{N}$, $n \in \mathbb{N}$) $\rightarrow$ Nat.
+Devuelve el resultado de hacer $b^n$ mod $n$.} \\
+
+\begin{tabular}{rp{17cm}}
+1: &    generarModulo ($b \in \mathbb{N}$, $power \in \mathbb{N}$, $n \in \mathbb{N}$) \{\\
+2: & \hspace{0,5cm}   \iif $(power < 2)$\\
+3: & \hspace{1cm}         \devolver $resto(b, n)$\\
+4: & \hspace{0,5cm}   \sino \\
+5: & \hspace{1cm}         \iif $(esPar(power))$\\
+6: & \hspace{1,5cm}           \asignar{temp}{generarModulo(b, power/2, n)}\\
+7: & \hspace{1,5cm}           \devolver $resto(temp * temp, n)$\\
+8: & \hspace{1cm}         \sino \\
+9: & \hspace{1,5cm}           \asignar{temp}{generarModulo(b, (power-1)/2, n)}\\
+10: & \hspace{1,5cm}          \devolver $resto(temp * temp * b, n)$\\
+11: & \hspace{1cm}        \finif\\
+12: & \hspace{0,5cm}  \finif\\
+13: & \}\\ \\
+\end{tabular}
+\\
+
+\subsection{C\'alculo de Complejidad}
+
+Primero calcularemos la complejidad en modelo uniforme para justificar porque el algoritmo es mejor que $O(n)$, y asi
+cumplir con la consigna del ejercicio. Luego procederemos a calcular su complejidad en el modelo logar\'itmico, debido a
+que el $n$ puede ser un n\'umero arbitrariamente grande y suponer que operaciones como m\'odulo o multiplicaciones sean
+constantes puede no reflejar bien el comportamiento del algoritmo.\\
+
+\underline{Modelo Uniforme}\\
+
+El algoritmo es el caso mas simple de D\&C, donde partimos el problema a la mitad, solo resolvemos una mitad, y unir
+estas mitades es de orden constante. Esto es verdad ya que cada llamada a $generarModulo()$ solo genera una llamada recursiva,
+con el el $n$ reducido exactamente a la mitad, y luego el resto de sus operaciones son $O(1)$, luego tenemos la ecuaci\'on: \\
+
+$T(n) = T(n/2) + \Theta(1)$ \\
+
+Aplicando el teorema maestro, siendo $a\ =\ 1$ y $b\ =\ 2$, tenemos:\\
+
+$f(n) = \Theta(n^{\log_b(a)} \log^k(n)) = \Theta(n^0 \log^0(n)) = \Theta(1)$ \\
+
+tomando k = 0. Luego tenemos que la complejidad del algoritmo es: \\
+
+$T(n) = \Theta(n^{\log_b(a)} \log^{k+1}(n)) = \Theta(n^0 \log^1(n)) = \Theta(\log(n))$ \\
+
+Esto se puede entender intuitivamente ya que el algoritmo parte sucesivas veces $n$ a la mitad, solo resolviendo una de
+estas. Supongamos que $n$ es una potencia de dos para facilitar los c\'alculos, y sea $t$ la cantidad de divisiones necesarias
+para llegar al caso base, o 1, tenemos que $n/{2^t} = 1$. Despejando $t$ nos queda $t = \log(n)$, y como en cada paso hacemos
+una cantidad acotada finita de operaciones de orden constante, su complejidad es $O(1)$. Hacemos $\log(n)$ pasos, la complejidad es
+$O(\log(n))$.
+\\
+
+\underline{Modelo Logaritmico}\\
+
+Planteamos la misma situacion que en el modelo uniforme, la cantidad de pasos sera $t = \log(n)$, pero ahora lo que se
+ejecuta en cada paso no sera algo $O(1)$. Analizando linea por linea tenemos:\\
+
+\begin{tabular}{rp{15.8cm}}
+6: & antes de hacer la llamada recursiva a $generarModulo()$, dividimos $power$ por 2, que tiene complejidad $\log(power) *
+\log(2) \leq \log(n) * c \in O(\log(n))$.\\
+7: & realizamos 2 calculos, primero $temp * temp$, pero temp es el resultado de llamar a $generarModulo()$, que siempre esta
+acotado por $n$, luego esto es $\log(temp) * \log(temp) \leq \log(n) * \log(n) \in O(\log^2(n))$. Ademas hacemos
+$resto(temp^2, n)$, que es efectivamente $temp^2 - n * floor(temp^2/n)$, donde hacemos una divisi\'on $\log(temp^2)
+* \log(n) \leq \log(n^2)* \log(n) = 2 * \log(n) * \log(n) \in O(\log^2(n))$. La funci\'on floor se limita a remover la
+parte decimal por lo que podemos suponerla menor que $O(\log^2(n))$, la multiplicaci\'on al igual que la divisi\'on
+$O(\log^2(n))$ y la resta $O(\log(n))$. \\
+\end{tabular} \\
+\begin{tabular}{rp{15.8cm}}
+9 y 10: & son iguales a 6 y 7, solo se agrega en los calculos un $\log(b)$, pero como b esta acotado, esto siempre es menor
+que una constante por lo que no cambia la complejidad con respecto a las lineas 6 y 7.\\
+\end{tabular}
+\\
+
+Resumiendo, en cada paso la complejidad es $O(\log(n)) + O(\log^2(n)) + O(\log^2(n)) = O(\log^2(n))$. Luego sea T(n) la
+complejidad del algoritmo tenemos:\\
+
+$T(n) = \displaystyle\sum_{i=0}^{\log(n)} O(\log^2(n)) = \log(n) * O(\log^2(n)) = O(\log(n) * \log^2(n)) \Rightarrow T(n)
+\in O(\log^3(n))$
+\\\\
+
+\textbf{Tama\~{n}o de entrada:} \\
+
+La funcion $generaModulo$ toma como parametros $b$ y $n$, dos naturales, con $b$ acotado. Sea $s$ sicho tama\~no
+(recordar que $b$ esta acotado):
+\begin{center}
+$s = \log_2(n) + \log_2(b) = \log_2(n*b) \Rightarrow n = 2^s / b$
+\end{center}
+
+Sustituyendo en la ecuacion tenemos que:
+
+\begin{center}
+$T(s) = O(\log^3(2^s / b)) = O(\log_2^3(2^s) - \log_2^3(b)) = O(s^3)$
+\end{center}
+
+\subsection{Casos de Pruebas y Gr\'aficos}
+
+Para realizar los graficos a continuaci\'on se opto por el m\'etodo de Cantidad de Operaciones, es decir, usamos una
+variable que fue sumando cada vez que se encontraba con una operacion basica, de acuerdo con el modelo logar\'itmico.
+
+\begin{center}
+\includegraphics[scale=0.45]{graficos/ej1-1.png} \\
+\scriptsize{\textsf{\textbf{Gr\'afico 1.1}}}  \\
+\end{center}
+
+En este grafico se utilizo b = 31, y n creciente de 1 a 20000. Se puede ver claramente como la cantidad de comparaciones
+real nunca supera la teorica, y la distribucion de puntos sigue la funci\'on $\log^3(x) * c$ (esta $c$ resulto ser
+aproximadamente 1,65 en la practica). \\
+
+Para ver el resultado mas claro, tomemos siempre el peor caso para $n$. Este seria que el $n$ fuese siempre impar en las
+sucesivas divisiones, luego podemos tomar $n = 2^c - 1$ para algun $c$. Asi se cumple que el numero es impar, por lo que
+el algoritmo procede a restarle uno y dividirlo por dos, luego tenemos $(2^c - 1 - 1)/2 = (2^c - 2) / 2 = 2^{c-1} - 1$,
+obteniendo nuevamente un numero impar. Para b = 23, tomamos los $n = 2^c - 1$ con $c \in [1, 30]$ tenemos:
+
+\begin{center}
+\includegraphics[scale=0.60]{graficos/ej1-2.png} \\
+\scriptsize{\textsf{\textbf{Gr\'afico 1.2}}}  \\
+\end{center}
+
+Tener en cuenta que, debido a la diferencia entre los distintos $n$, el grafico esta en escala logaritmica. En esta
+escala, la funcion $\log^3(x)$ se asemeja a $x^3$. La distribucion de puntos claramente refuerza la afirmacion de la
+complejidad real del algoritmo.
+
+\subsection{Conclusi\'on}
+
+Este algoritmo es un claro ejemplo de aplicar el metodo de Divide \& Conquer, al principio parecia un problema simple
+sin posibilidad de mejorar, pero rapidamente uno podia darse cuenta de las posibles mejoras e implementarlas.
+
+Tambien es un claro ejemplo de la diferencia entre las complejidades de a cuerdo al modelo elegido, en el uniforme
+se conseguia complejidad $O(\log(n))$, mientras que en el logaritmico la complejidad era $O(\log^3(n))$. En el caso de
+que $n$ fuese muy grande, operaciones como las multiplicaciones o divisiones necesarias para el calculo pueden no
+reflejar su verdadero costo si las consideramos todas constantes, luego el metodo logaritmico tiene en cuenta mejor
+esto para casos como este, donde el $n$ puede y suele ser un numero arbitrariamente grande.
+
+Analizando los graficos, puede verse que solo en casos extremos como en numeros que siempre son impares cuando se les
+resta uno y se los divide por 2, es que se alcanza la complejidad teorica y esta se mantiene como en el grafico 2. Pero
+cuando probamos valores mas variados como se muestra en el grafico 1, la cantidad real de operaciones para distintos n
+varia mucho con respecto a valores cercanos, y si bien se ve que estan bien acotados por $O(\log^3(n))$, muchos de estos
+valores estan muy lejos de alcanzarlo.
+
+\newpage
+
+\section{Ejercicio 2}
+
+\subsection{Enunciado}
+
+Las alumnas del $3^0$A de la escuela T\'ecnica P\'ublica No 1 (TP1) est\'an por jugar a la ronda.
+
+En este juego cada persona toma de la mano a otras dos formando un c\'irculo que recibe el
+nombre de ronda, luego de lo cual las personas cantan y saltican haciendo girar la ronda
+en sentido horario o antihorario. Como en todo grupo de personas, algunas alumnas son
+amigas y otras no tanto. A ﬁn de que el juego sea lo m\'as divertido posible, las alumnas
+han decidido que para formar la ronda, cada alumna debe tomar de la mano a dos de sus
+amigas. Decidir si las alumnas pueden formar una ronda que las contenga a todas.
+
+
+\subsection{Introducci\'on}
+
+En este problema nesecitamos resolver si es posible generar una ronda con un determinado grupo de alumnas. Para resolverlo
+ideamos un algoritmo de backtracking que va ubicando a las alumnas en la ronda. Sabemos que es un proceso costoso, ya que
+se debe probar todas las posibles combinaciones de amigas.
+
+Para mejorar el rendimiento del algoritmo pensamos en algunas podas posibles para el mismo. La idea es introducir algunos checkeos
+antes de empezar a probar todas las opciones, de forma tal de descartar casos en los que podemos decidir si existira o no una posible ronda
+en tiempo mucho menor que con el algoritmo de backtracking. En caso de que fallen, no tenemos otra opcion mas que usar fuerza bruta, y terminamos
+llamando al algoritmo que siempre nos dara respuesta.
+
+\subsection{Desarrollo de la Soluci\'on}
+
+
+Para aplicar la t\'ecnica de backtracking pensamos en un algoritmo recursivo. La idea de este algoritmo encontrarCamino
+es, dado una alumna de partida, una de llegada y una cantidad de saltos, responder si existe un camino entre la alumna
+de partida hasta la de llegada en exactamente la cantidad de saltos dada, sin repetir ninguna amiga o usar amigas
+que ya se hayan marcado como usadas.
+
+Sea $A$ una alumna cualquiera (ya que por ser una ronda, debe poder recorrerse desde cualquier alumna), procedemos a
+invocar esta funcion con $A$ como alumna de partida y llegada y la cantidad de saltos igual a la cantidad total de alumnas.
+Primero marcamos a la alumna actual como usada y luego comenzamos a recorrer el arreglo que contiene el conjunto de sus
+amigas. Por cada amiga volvemos a invocar la funcion con esta como partida, $A$ siempre de llegada, y con la variable de saltos
+decrementada en 1.
+
+Luego esta funci\'on devuleve verdadero solo si: o bien la cantidad de saltos es 1 y tengo como amiga a la alumna de llegada
+(el caso base), o bien la llamada recursiva $encontrarCamino$ de alguna de sus amigas devuelve verdadero (es decir la propagaci\'on
+del caso base)
+
+Se puede ver como en cada nodo se prueban todas las posibilidades existentes, deteniendose solo si se cumple el caso base en alguna
+prueba. En caso contrario la funci\'on devuelve falso, por lo que su padre (es decir la alumna que llamo a la funci\'on con su amiga)
+continuar\'a probando con el resto de sus amigas hasta agotarlas, y as\'i sucesivamente. Si todas las posibilidades son agotadas y no
+se encuentra soluci\'on, eventualmente se volver\'a a la llamada original con la respuesta negativa.
+
+Introducimos algunas podas en el algoritmo para descartar casos y mejorar el algoritmo. Una de estas podas es verificar si existe
+alguna alumna que tiene menos de 2 amigas, debido a que en una ronda una alumna debe tener exactamente 2 amigas a sus lados, esta
+instancia ya no puede formar ronda.
+
+Otra poda fue la de verificar si el grafo era conexo. Para realizar esta poda utilizamos la t\'ecnica $bfs$ para recorrer el grafo,
+con la cual vamos marcando con una flag las alumnas que recorrimos. Una vez terminado, recorremos todas las alumnas y si alguna
+no tiene esta flag seteado, significa nos indica que no fue recorrida por lo tanto el grafo no era conexo. En tal caso no es posible realizar la ronda.
+
+Otra mejora fue reducir en 1 la cantidad de amigas que se recorren de la primer alumna que se empieza a probar. Si de las $n$ amigas,
+uno prueba y tiene como resultado que ninguna de $n-1$ amigas puede formar una ronda, luego la ultima tampoco lo hara, ya que en caso
+contrario esta ronda que pasa por la amiga $n$ tiene que volver por alguna de las anteriores para regresar a la alumna original, pero
+entonces tendriamos que poder haber armado la ronda desde esta amiga anterior hasta la $n$.
+
+\newpage
+
+\subsubsection{Descripci\'on y Correctitud de los Algoritmos}
+
+{\bf algunaAlumnaNoTieneNiDosAmigas}: este algoritmo simplemente recorre la lista de alumnas y se fija que todas tengan al menos 2 amigas,
+en caso contrario devuelve falso. Si esto ocurre ya podemos afirmar que no se podra armar una ronda, ya que toda alumna en una ronda tiene
+exactamente 2 amigas a sus costados, y como al menos 1 alumna no tiene ni 2 amigas no puede pertenecer a una ronda.\\\\
+{\bf esConexo}: este algoritmo simplemente chequea si el grafo es conexo, en caso contrario devuelve falso. En este caso podemos afirmar que no se puede generar la ronda ya que en la misma existe un camino entre cada par de alumnas, lo cual si no es conexo no se puede lograr.\\\\
+{\bf tieneMismasAmigas? y esAmigaDe?}: para realizar este algoritmo creamos en cada alumna un arreglo con tama\~no igual al total de alumnas.
+Luego checkear si dos alumnas son amigas lo hacemos en $O(1)$ y para ver si tienen las mismas amigas $O(n)$. La desventaja es que crear todos
+estos arreglos inicialmente tiene costo $O(n^2)$, se vera en el calculo de complejidad y en los graficos si mejora o no el algoritmo.\\\\
+{\bf encontrarCamino}: recibe el vector de alumnas ($girls$), una alumna de partida ($from$), una de llegada ($to$), y una cantidad de pasos
+($step$). Como ya explicamos, el algoritmo es recursivo y responde si existe un camino desde la alumna $from$ hasta la $to$ que pase exactamente
+por $step$ alumnas sin usar alumnas ya utilizadas.\\
+Este algorimo a su vez se llama a si mismo por cada amiga de la alumna $from$, reduciendo la cantidad de $step$ en 1. Asi el algoritmo siempre
+llegara a su caso base, o $step = 1$, que sera una combinacion posible de alumnas, y probara si se cierra la ronda, o agotara las posibilidades
+en el intento. Como cada alumna ejecuta este algoritmo con todas sus amigas, y estas a la vez con las suyas, todas las combinaciones posibles se
+probaran en orden hasta encontrar alguna que forme una ronda o agotar las posiblidades.\\
+{\bf generarRonda}: este algoritmo solo prepara el ambiente para $encontrarCamino$. Primero hace 2 podas: llama a algunaAlumnaNoTieneNiDosAmigas y
+reduce en 1 la cantidad de amigas de la primer alumna por la que se empieza a probar (ya se justific\'o porque). Luego llama a $encontrarCamino$ con
+esta alumna como partida y llegada y asigna a $step$ la cantidad total de alumnas. Retorna lo que le responda $encontrarCamino$.
+
+\subsection{Pseudoc\'odigo}
+
+\nuevoAlgo{Algoritmo 1}{generarRonda ($girls$ : $vector<Girl>$) $\rightarrow$ Bool.}
+Devuelve True si se puede formar una ronda con las alumnas ingresadas\\
+
+\begin{tabular}{rp{17cm}}
+1: &    generarRonda ($girls$ : $vector<Girl>$) \{\\
+2: & \hspace{0,5cm}   \iif $(algunaAlumnaNoTieneNiDosAmigas(girls)$ $||$  $!esConexo(girls))$\\
+3: & \hspace{1cm}       \devolver $false$\\
+4: & \hspace{0,5cm}   \finif\\
+5: & \hspace{0,5cm}   $reducirEnUnoLaCantidadDeAmigasDeLaPrimerAlumna(girls)$\\
+3: & \hspace{0,5cm}   \devolver $encontrarCamino(girls, 1, 1, girls.cantAlumnas)$\\
+13: & \}\\ \\
+\end{tabular}
+\\
+
+\newpage
+
+\nuevoAlgo{Algoritmo 2}{encontrarCamino ($girls$ : $vector<Girl>$, $from$ : $int$, $to$ : $int$, $step$, $int$) $\rightarrow$ Bool.}
+Devuelve True si existe un camino desde la alumna numero 'from' hasta la numero 'to' pasando por exactamente 'step' alumnas, sin pasar por alumnas usadas.\\
+
+\begin{tabular}{rp{17cm}}
+1: &    encontrarCamino ($girls$ : $vector<Girl>$, $from$ : $int$, $to$ : $int$, $step$, $int$) \{\\
+2: & \hspace{0,5cm}   \asignar{girl}{girls[from]}\\
+3: & \hspace{0.5cm}   \\
+4: & \hspace{0.5cm}   \iif $(step < 1)$\\
+5: & \hspace{1cm}         \devolver $girl.isFriend(to)$\\
+6: & \hspace{0,5cm}   \finif\\
+7: & \hspace{0,5cm}   $girl.setearUsada()$\\
+8: & \hspace{0,5cm}   \mientras{(girl.tengaAmigas())}\\
+9: & \hspace{1cm}        \asignar{friend}{girl.siguienteAmiga()}\\
+10: & \hspace{1cm}        \iif $(friend.noEstaUsada() \wedge encontrarCamino(girls, friend.number(), to, step-1))$\\
+11: & \hspace{1,5cm}         \devolver $true$\\
+12: & \hspace{1cm}        \finif\\
+13: & \hspace{0,5cm}    \fin\\
+14: & \hspace{0,5cm}   $girl.setearNoUsada()$\\
+15: & \hspace{0,5cm}   \devolver $false$\\
+16: & \}\\ \\
+\end{tabular}
+\\
+
+\subsection{C\'alculo de Complejidad}
+
+Utilizaremos el modelo uniforme para el calculo de la complejidad. Debido a que el algoritmo es de fuerza bruta, como ya
+veremos mas adelante la complejidad crecera desmesuradamente a medida que se aumenta el $n$, luego no vale la pena
+utilizar un modelo logaritmico ya que el $n$ no podra ser demasiado grande o el algoritmo tardaria muchisimo en terminar.\\\\
+Primero analizamos la complejidad de aplicar las podas:\\\\
+$algunaAlumnaNoTieneNiDosAmigas$: Recorre todas las girls y realiza operaciones $O(1) \rightarrow O(n)$.\\
+$esConexo$: Verifica si el grafo es conexo mediante BFS. La complejidad de BFS es $O(n + m)$.\\
+\\
+Luego analizamos $encontrarCamino$ paso a paso:
+
+\begin{tabular}{rp{15.8cm}}
+2: & una asignasion y pedir un lemento a un array ambas $O(1)$.\\
+5: & la operacion $isFriend()$ es $O(1)$ ya que cada alumna tiene un array en forma de set que permite checkear si un
+par de alumnas son amigas simplemente fijandose si una tiene seteado como amiga la posicion correspondiente en el
+array. Crear estos arrays al principio tendra complejidad $O(n^2)$.\\
+7: & setear un bool $O(1)$.\\
+8: & este mientras se ejecutara en el peor caso $n-1$ veces, es decir si la alumna es amiga de todo el resto.\\
+9: & tomar la siguiente amiga es $O(1)$ ya que una alumna tiene un array con el numero de cada una de sus amigas, y aqui
+solo pedimos el siguiente.\\
+10: & fijarse si no esta usada es simplemente comparar un bool que es $O(1)$, $encontrarCamino$ se ejecutara nuevamente
+con una amiga, pero esta vez la alumna original estara marcada como usada, luego cuando se recorra el mientras de esta
+amiga, tendra 1 posibilidad menos que antes.\\
+\end{tabular}
+\\\\
+
+La primer alumna es un caso especial, ya que solo le basta recorrer $n-2$ amigas para responder correctamente, luego para cada
+amiga llama a $encontrarCamino$, pero estas amigas a su vez tendran en peor caso que probar $n-2$ amigas, ya que una (la primera) ya esta usada.
+Aplicando este razonamiento sucesivamente hasta llegar al caso base o 1, tenemos $n-2$ sumatorias de la forma:
+
+\begin{center}
+$T(n) = O(n) + O(n + m) + (n-2) * \displaystyle\sum_{i=1}^{n-2} \displaystyle\sum_{i=1}^{n-3} ... \displaystyle\sum_{i=1}^{2} O(1) = O(n) + O(n^2) + (n-2) * [(n-2)
+* (n-3) * ... * 2 * 1]\Rightarrow T(n) \in O((n-2) * (n-2)!)$
+\\
+\end{center}
+
+\newpage
+\textbf{Tama\~{n}o de entrada:} \\
+
+La funcion $generarRonda$ toma como parametro un $n$ que representa la cantidad de alumnas totales, y luego por cada
+alumna una lista de sus amigas $cantAmigasDe()$. Luega sea $s$ el tama\~no de entrada:
+
+\begin{center}
+$s = \log(n) + \displaystyle\sum_{i=1}^{n} \log(cantAmigasDe(i)) + cantAmigasDe(i) * \log(n) \geq \log(n) + \displaystyle\sum_{i=1}^{n} 1
+= \log(n) + n \Rightarrow s \geq n$
+\end{center}
+
+Luego la complejidad es
+
+\begin{center}
+$T(n) = T(s) = O((s-2) * (s-2)!)$.
+\end{center}
+
+\subsection{Casos de Pruebas y Gr\'aficos}
+
+El problema que surgia al intentar hacer casos de prueba era como medir cuan conectadas estaban las distintas alumnas,
+ya que esto modificaria el comportamiento del algoritmo. Para esto decidimos, al crear cada caso de prueba, y para cada
+$n$ cantidad de amigas, crear muchos grafos, cada uno con una densidad de aristas creciente. Es decir la eleccion de
+quien es amiga de quien fue randomizada, y la cantidad de amistades que pusimos fue creciendo segun el caso. Para cada
+$n$, y sean $t$ la cantidad total de amitades posibles si todas son amigas de todas, creamos 10 grafos, poniendo en cada
+una cantidad de amistades igual a una fraccion de $t$, primero el 10\%, luego 20\%, y asi hasta 100\%.
+
+\begin{center}
+\includegraphics[scale=0.45]{graficos/ej2-1.png} \\
+\scriptsize{\textsf{\textbf{Gr\'afico 2.1}}}  \\
+\end{center}
+
+Puede verse como, cuando la densidad de amigas es muy poca, se agotan rapidamente las posibilidades, por lo que la
+cantidad de operaciones no es muy grande. Lo mismo ocurre cuando la densidad es muy grande, ya que al ser todas muy
+amigas, no cuesta tanto armar una ronda, por lo que el algoritmo termina rapidamente. El punto critico esta en el medio,
+cuando no hay ni muchas ni muy pocas, asi logramos alcanzar casos malos donde se refleja la ineficiencia de un algoritmo
+de backtracking. \\
+
+Para hacer un mejor analisis de peor caso, encontramos que un tipo de instancia
+que intenta explotar la fuerza bruta y llevar al maximo la cantidad de operaciones. La idea es construir un grafo
+completo donde todas las alumnas son amigas de todas, y luego agregar dos alumnas mas, que solo seran amigas entre si y con una
+\'unica alumna del grafo completo. De esta manera, si comenzamos probando con alguna de estas dos amigas, el algoritmo se meter\'a
+en el grafo con todas las aristas posibles, y probara todas sus combinaciones sin llegar a un resultado satisfactorio. Mas a\'un,
+ninguna de las podas es satisfactoria, por lo que fuerza bruta es la unica opci\'on. Debido a la complejidad del algoritmo (factorial),
+los valores difieren demasiado entre si, por lo que no es posible graficarlos y ver bien los resultados. Para poder visualizar los resultados mejor,
+podemos ver la siguiente tabla: \\
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\# alumnas & Comparaciones Peor Caso & Comparaciones Caso Teorico ((n-2) * (n-2)! sin multiplicar por constante))\\
+\hline
+10 & 466,441 & 322,560 \\
+\hline
+11 & 4,165,605 & 3,265,920 \\
+\hline
+12 & 41,430,126 & 36,288,000 \\
+\hline
+13 & 453,749,704 & 439,084,800 \\
+\hline
+14 & 5,425,256,823 & 5,748,019,200 \\
+\hline
+15 & 70,311,314,031 & 80,951,270,400 \\
+\hline
+\end{tabular}
+\end{center} \vspace{0,15cm}
+
+A partir del $n = 15$ en maquinas actuales, la prueba ya empieza a tardar mucho, suficiente como para que la soluci\'on no sea pr\'actica
+en la realidad. Se puede ver como la cantidad de operaciones sigue de cerca la complejidad te\'orica calculada anteriormente con este
+caso extremo.\\
+
+Por \'ultimo analizamos la efectividad de las podas, probando con una serie de grafos aleatorios,
+de los cuales algunos resultaban conexos y otros no. Terminamos sacando un promedio de la cantidad de
+operaciones para cada $n$ distinto (utilizando densidades de aristas de un \%20)
+
+
+\begin{center}
+\includegraphics[scale=0.6]{graficos/ej2-2.png} \\
+\scriptsize{\textsf{\textbf{Gr\'afico 2.2}}}  \\
+\end{center}
+
+Como puede verse, a\'un para $n$ grandes, el algoritmo de prueba de conexidad es $n^2$, luego en los
+casos en que logramos comprobar que el grafo no es conexo, la cantidad de operaciones se reduce drasticamente.
+
+\subsection{Conclusi\'on}
+
+Luego de aplicar la tecnica de backtracking y analizar los resultados de complejidad y casos reales, queda reafirmada la
+idea de la tecnica: Siempre encontraremos solucion al problema, pero para casos medianamente grandes el tiempo de
+ejecucion del algoritmo es demasiado grande como para ser una opcion viable. En la practica vimos que para computadoras
+actuales, elijiendo valores de $n > 30$ ya el algoritmo tardaba en algunas instancias horas.
+
+En un primer intento probamos codificar el algoritmo en forma iterativa, pero terminabamos manejando muchos datos y se
+complicaba el codigo mucho. Procedimos a calcularlo en forma recursiva como explicado anteriormente y se reducio
+drasticamente la implementacion y el algoritmo termino siendo mas expresivo, si bien esto no modifico la complejidad.
+
+\newpage
+
+\section{Ejercicio 3}
+
+\subsection{Enunciado}
+
+Una empresa de desarrollo de software acaba de implementar un novedoso sistema con el
+cual espera aumentar la productividad de sus programadores. Cada programador debe
+cumplir por d\'ia cierto tiempo de trabajo en la empresa, pero es libre de hacerlo en el
+horario que desee. El tiempo de trabajo puede ser diferente para cada programador,
+y no puede fraccionarse a lo largo del d\'ia. El u\'nico inconveniente que subsiste con el nuevo
+sistema es que cuando hay muchos programadores trabajando, ocasionalmente la m\'aquina expendedora
+de caf\'e se queda sin suministros. Se dispone de dos listas, extra\'idas
+del sistema de control de ingresos y egresos de la empresa. Una de las listas contiene
+para cada programador su horario de ingreso a la empresa; en la otra lista los horarios
+son de egreso. Tanto la lista de ingresos como la de egresos se encuentran ordenadas por
+horario, ya que esa es la manera en que el sistema de control registra los eventos. Se
+considera que cada programador est\'a dentro de la empresa desde su horario de ingreso
+hasta su horario de egreso, incluyendo ambos extremos. Utilizar las listas para determinar
+la mayor cantidad de programadores que est\'an simult\'aneamente dentro de la empresa, a
+fin de que la m\'aquina expendedora de caf\'e pueda ser abastecida adecuadamente.
+
+
+\subsection{Introducci\'on}
+
+Para la realizaci\'on de este ejercicio sab\'iamos que ciertas hip\'otesis del problema eran las que iban a permitir
+que la complejidad del algoritmo sea lineal y no algo mas costoso. Leyendo el enunciado fuertemente pudimos
+observar que la ventaja estaba en las listas \underline{ordenadas} de ingreso y egreso, las cuales usamos para
+nuestro beneficio y para la reducci\'on de la complejidad del algoritmo.
+
+La ventaja obtenida se basa en que dado 2 arreglos, $arreglo1$ y $arreglo2$ ordenados, de longitud $n$ y $m$
+respectivamente pueden formar un arreglo que contenga los elementos de ambos arreglos con un costo, en peor caso, de
+$O(n + m)$ y as\'i ahorrarme el costo que tendr\'ia fundir 2 arreglos que no se a priori si est\'an ordenados.
+
+En el caso particular del problema tenemos que el $arreglo1$ y $arreglo2$ poseen igual longitudes ya que cada
+programador solo puede ingresar y egresar una \'unica vez, y si alguno ingresa, debe egresar antes de la hora
+00:00:00. Luego la complejidad de la funci\'on es $O(n)$ con $n$ = longitud de los Arrays.
+
+\subsection{Desarrollo de la Soluci\'on}
+
+La funci\'on principal es $controlarMaquinaCafe()$,  que recibe como par\'ametros los dos arreglos de entradas y salidas
+de los programadores. Primero funde los dos arreglos mediante la funci\'on $mergeArray()$, que adem\'as prioriza las
+entradas sobre las salidas en caso de que coincidan horarios. Luego recorreremos la lista fundida usando dos enteros,
+uno de contador, que informe cuantos programadores hay en el iesimo elemento de la lista (es decir, en un horario dado)
+y otro que sea la cantidad m\'axima de programadores que hubo hasta el iesimo paso.
+Al final del ciclo devolveremos el entero que fue obteniendo el m\'aximo numero de programadores.
+
+\subsubsection{Descripci\'on y Correctitud del Algoritmo}
+
+Es importante aclarar que el problema pide hallar cuanto fue el m\'aximo de programadores en un momento dado en el
+transcurso del d\'ia, pero no pide ni que momento fue, ni quienes eran. Luego el problema se reduce a calcular cuantos
+programadores se encontraban trabajando en cada momento del d\'ia y extraer el numero mayor.
+
+Utilizamos una variable $acum$ que simplemente se incrementaba cuando entraba un programador a trabajar, y se
+decrementaba cuando uno salia. As\'i ten\'iamos en cada horario de entrada/salida el numero exacto de programadores
+trabajado. Luego el problema se reduc\'ia a recorrer la lista fundida de ingresos/egresos ordenada, actualizar la variable
+$acum$ seg\'un las reglas reci\'en descriptas, y guardar el m\'aximo de estos valores.
+
+Tuvimos cuidado al fundir las listas ordenadas de egresos e ingresos, y forzamos que en caso de que coincidan horarios
+siempre priorizar el ingreso. Luego al llegar a alg\'un momento en que ingresen y egresen gente al mismo tiempo, como hay
+que contar a todos, primero sumamos el acumulador y guardamos el m\'aximo de ser alcanzado, y luego retiramos a la gente.
+
+\newpage
+
+\subsection{Pseudoc\'odigo}
+
+\nuevoAlgo{Algoritmo 3}{controlarMaquinaCafe (ingreso : $vector<EntryTime>$, egreso : $vector<EntryTime>$) $\rightarrow$ Nat.
+
+Devuelve el m\'aximo numero de programadores que est\'an en la empresa de acuerdo a los dos vectores pasados como
+par\'ametro. EntryTime es $tupla<hora:int, entrada:bool>$} \\
+
+\begin{tabular}{rp{17cm}}
+1: &    controlarMaquinaCafe (ingreso : $vector<EntryTime>$, egreso : $vector<EntryTime>$) \{\\
+2: & \hspace{0,5cm}   \asignar{scheduleArray}{mergeArrays(ingreso, egreso)}\\
+3: & \hspace{0,5cm}   \asignar{programadoresActuales}{0}\\
+4: & \hspace{0,5cm}   \asignar{max}{0}\\
+5: & \hspace{0,5cm}   \\
+6: & \hspace{0,5cm} \mientras $(hayElementos(scheduleArray))$ \hacer\\
+7: & \hspace{1cm}   \iif $(esEntrada?(elemSiguiente(scheduleArray)))$\\
+8: & \hspace{1,5cm}           \asignar{programadoresActuales}{programadoresActuales + 1}\\
+9: & \hspace{1,5cm}           \iif $(programadoresActuales > max)$\\
+10: & \hspace{2cm}           \asignar{max}{programadoresActuales}\\
+11: & \hspace{1,5cm}         \finif\\
+12: & \hspace{1cm}         \sino \\
+13: & \hspace{1,5cm}           \asignar{programadoresActuales}{programadoresActuales - 1}\\
+14: & \hspace{1cm}   \finif\\
+15: & \hspace{0,5cm}   \fin\\
+16: & \hspace{0,5cm}   \devolver{max}\\
+17: & \}\\ \\
+\end{tabular}
+
+\subsection{C\'alculo de Complejidad}
+
+En este problema elegimos utilizar el modelo uniforme. La razon por la cual descartamos el modelo logaritmico es que
+no se realizan operaciones significativas con la cantidad de programadores, este $n$ solo modifica la cantidad de veces que
+encontramos un elemento en la lista, pero no hay operaciones costosas que no queden bien representadas en la complejidad
+aun si este $n$ es muy grande. Procedemos a calcular la complejidad recorriendo el pseudoc\'odigo de la secci\'on anterior:\\
+
+2: llamamos a la funci\'on mergeArray que funde los dos arreglos ya ordenados por hip\'otesis de tama\~no $n$ cada
+uno. Recorremos una \'unica vez cada arreglo, y en cada elemento de los arrays hacemos una comparaci\'on y
+una asignaci\'on, ambas $O(1)$. En resumen hacemos $2n$ iteraciones de operaciones constantes, luego la complejidad
+es $O(n)$.\\
+3 y 4: son asignaciones, es constante\\
+6: es un ciclo que recorre el scheduleArray completo y como su tama\~no es $2n$ esta es la cantidad de iteraciones
+total\\
+7-15: todas estas operaciones dentro del ciclo son constantes, por asignaciones y comparaciones
+
+\begin{center}
+$T(n) = 2n + 2n * (1+1+1+1+1+1+1+1) = 2n * 9 = 18n \Rightarrow T(n) \in O(n) $
+\end{center}
+
+
+Como se puede apreciar en esta demostraci\'on los diferentes horarios en los que ingresan y egresan los programadores, no
+var\'ian la complejidad del problema, seguir\'a siendo lineal con respecto a la cantidad de programadores que haya en la
+empresa.\\
+
+
+\textbf{Tama\~{n}o de entrada:} \\
+\newline
+La funci\'on $controlarMaquinaCafe$ toma como par\'ametro un Natural $n$ que representa la cantidad de programadores, y adem\'as 2 listas con los horarios de ingreso y egreso de los mismos, las cuales contienen el horario y el numero de programador.
+
+\begin{center}
+$s = \log n + \displaystyle\sum_{i=1}^{n}\log x_i + \displaystyle\sum_{i=1}^{n} \log h_i$ \\
+\end{center} \vspace{0,15cm}
+
+Como para representar cualquier n\'umero necesito al menos 1 bit, vale que $\log i \geq 1$. Y adem\'as, como $\log n \; \geq \; 0$, obtenemos:
+
+\begin{center}
+$s \; \geq \; \log n + \displaystyle\sum_{i=1}^{n} 1 +  \displaystyle\sum_{i=1}^{n} 1 \; = \log n + n + n \geq \; n + n = 2n \hspace{0,5cm} \Rightarrow \hspace{0,5cm} s \geq 2n$
+\end{center} \vspace{0,15cm}
+
+Como nuestro algoritmo es \ode{n} y tenemos que $T \geq 2n$
+$\hspace{0,25cm} \Rightarrow \hspace{0,25cm}$ el algoritmo es \ode{s}
+
+
+\newpage
+\subsection{Casos de Pruebas y Gr\'aficos}
+
+Para realizar los gr\'aficos decidimos medir la cantidad de operaciones que realizaba el algoritmo, es decir, usamos una
+variable $comp$ que se incrementaba cada vez que se realizaba una operaci\'on b\'asica. Es muy importante hacer una aclaraci\'on: al
+ver el algoritmo se puede notar que la cantidad de operaciones que se realizaran para una cantidad $n$ de programadores sera siempre la
+misma independientemente de los horarios de estos. Esto es debido a que todo horario de entrada y salida es ingresado en una lista, esta lista
+es recorrida en su completitud siempre, y para cada nodo de la misma se hacen las mismas operaciones, salvo en los casos que se alcanze un nuevo
+maximo, donde solo habr\'a una asignacion mas. Luego no hay practicamente variacion en la complejidad de distintos casos, lo unico que desequilibra
+la cantidad de operaciones es esta asignacion final, por lo que el peor caso es que los $n$ programadores entren y esten al mismo tiempo en el edificio,
+para que cada nodo de entrada encuentre un nuevo maximo. \\
+
+A continuacion presentamos un grafico donde todos los programadores entran a las 00:00:00 y se retiran a las 23:59:59, que es un peor caso segun lo explicado:
+
+
+\begin{center}
+\includegraphics[scale=0.7]{graficos/ej3-1.png} \\
+\scriptsize{\textsf{\textbf{Gr\'afico 3.1}}}  \\
+\end{center}
+
+Incrementamos la cantidad de programadores de 1 hasta 200. No tomamos en cuenta ninguna variaci\'on de los horarios de los programadores ya que no interfiere en la complejidad del algoritmo.
+Como era de esperar el gr\'afico nos muestra que el algoritmo se comporta de a cuerdo a la complejidad calculada, y no tiene mejores/peores casos distintos, como no hay ningun corte de flujo
+todos los casos se comportan de manera casi perfectamente lineal.
+
+
+\subsection{Conclusiones}
+
+Luego del an\'alisis de las pruebas y mediante la observaci\'on de gr\'aficos pudimos observar que para este algoritmo
+la complejidad no depende en absoluto de los horarios de ingreso y egreso de los programadores, sino que depende de la
+cantidad de programadores. Sin ir muy lejos, esta conclusi\'on pod\'ia haberse notado antes de los an\'alisis ya que en
+nuestro algoritmo lo \'unico que valoramos de los horarios es si son de ingreso o egreso.
+
+Por otro lado y a diferencia de los algoritmos del ejercicio 1 y 2, este algoritmo no tiene una t\'ecnica algor\'itmica
+muy dificultosa, y tambi\'en, es bastante mas sencilla que un algoritmo de divide \& conquer o backtracking, lo que no significa que sea m\'as o menos costosa en cuanto a su complejidad.
+
+
+\end{document}

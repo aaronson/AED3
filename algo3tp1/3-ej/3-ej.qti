@@ -1,0 +1,106 @@
+QtiPlot 0.9.7 project file
+<scripting-lang>	muParser
+<windows>	2
+<table>
+Table1	28	4	9/8/10 11:40 PM
+geometry	0	0	527	499	
+header	Tamanio[X]	Azar[Y]	Peorcaso[Y]	Teorico[Y]
+ColWidth	100	100	100	133	
+<com>
+<col nr="3">
+rint(5.2*((col("Tamanio")/exp(1))^col("Tamanio") * sqrt(2 * 3.14 * (col("Tamanio") + 1/6)) * pow(col("Tamanio"), 3) * (log10(2*col("Tamanio")) * 2*col("Tamanio"))))
+</col>
+</com>
+ColType	0;0/13	0;0/13	0;0/13	0;0/13
+ReadOnlyColumn	0	0	0	0
+HiddenColumn	0	0	0	0
+Comments					
+WindowLabel		2
+<data>
+0	2.00000000000000e+00	1.90000000000000e+02	1.95000000000000e+02	2.00000000000000e+02
+1	3.00000000000000e+00	6.10000000000000e+02	8.44000000000000e+02	3.93000000000000e+03
+2	4.00000000000000e+00	3.24800000000000e+03	4.69700000000000e+03	5.76690000000000e+04
+3	5.00000000000000e+00	1.79010000000000e+04	3.25290000000000e+04	7.79608000000000e+05
+4	6.00000000000000e+00	7.66390000000000e+04	2.67428000000000e+05	1.04683540000000e+07
+5	7.00000000000000e+00	2.61784000000000e+05	2.63973500000000e+06	1.44185626000000e+08
+6	8.00000000000000e+00	1.66104900000000e+06	3.70462350000000e+07	2.06742292800000e+09
+7	9.00000000000000e+00	4.64189800000000e+06	1.09426292200000e+09	3.10712827190000e+10
+8	1.00000000000000e+01	3.06453070000000e+07	4.12471118750000e+10	4.90845647068000e+11
+</data>
+</table>
+<multiLayer>
+Graph1	1	1	9/9/10 12:01 AM
+geometry	471	70	796	681	active
+WindowLabel		2
+Margins	5	5	5	5
+Spacing	5	5
+LayerCanvasSize	418	326
+Alignement	0	0
+<graph>
+ggeometry	8	8	773	614
+PlotTitle	Ej 3, Comparación caso teórico, peor caso y caso sin intención	#000000	4228
+<Antialiasing>1</Antialiasing>
+Background	#ffffff	255
+Margin	0
+Border	0	#000000
+grid	0	0	0	0	#0000ff	0	0.5	#a0a0a4	2	0.4	#0000ff	0	0.5	#a0a0a4	2	0.4	0	0	2	0	0
+EnabledAxes	1	1	1	1	
+AxesTitles	Tamaño del alfabeto n	Cantidad de operaciones			
+AxesTitleColors	#000000	#000000	#000000	#000000	
+AxesTitleAlignment	5124	5124	5124	5124
+AxesTitleDistance	2	2	2	2
+TitleFont	Sans Serif	19	75	0	0	0
+ScaleFont0	Sans Serif	15	75	0	0	0
+ScaleFont1	Sans Serif	15	75	0	0	0
+ScaleFont2	Sans Serif	15	75	0	0	0
+ScaleFont3	Sans Serif	15	75	0	0	0
+AxisFont0	Sans Serif	15	50	0	0	0
+AxisFont1	Sans Serif	15	50	0	0	0
+AxisFont2	Sans Serif	15	50	0	0	0
+AxisFont3	Sans Serif	15	50	0	0	0
+EnabledTickLabels	1	1	1	1	
+AxesColors	#000000	#000000	#000000	#000000
+AxesNumberColors	#141312	#141312	#141312	#141312
+AxesBaseline	0	0	0	0	
+CanvasBackground	#ffffff	255
+curve	Table1_Tamanio	Table1_Azar	1	0	#000000	0	1	7	1	#000000	#000000	0	#000000	14	1	2	0	0	25	1
+curve	Table1_Tamanio	Table1_Peorcaso	1	0	#ff0000	0	1	7	2	#ff0000	#ff0000	0	#000000	14	1	2	0	0	25	1
+curve	Table1_Tamanio	Table1_Teorico	2	1	#00ff00	0	1	7	3	#00ff00	#00ff00	0	#000000	14	1	2	0	0	28	1
+scale	0	1	1000000000000	0	6	5	1	0
+scale	1	1	1000000000000	0	8	5	1	0
+scale	2	0	11	1	7	5	0	0
+scale	3	0	11	1	8	5	0	0
+LabelsFormat	0	4	0	4	0	4	0	4	
+AxisType	0	0	0	0	
+MajorTicks	1	1	1	1	
+MinorTicks	1	1	1	1	
+TicksLength	5	9
+DrawAxesBackbone	1
+AxesLineWidth	1
+LabelsRotation	0	0
+<Legend>
+<Frame>1</Frame>
+<Color>#000000</Color>
+<FrameWidth>1</FrameWidth>
+<LineStyle>0</LineStyle>
+<x>0.24570446735395</x>
+<y>408536723514.47</y>
+<right>5.61340206185567</right>
+<bottom>7060120199.42582</bottom>
+<attachTo>0</attachTo>
+<Text>
+\l(1)Cant. ops, caso sin intención
+\l(2)Cant. ops, peor caso
+\l(3)n!*n³*m log m (m=2n)
+</Text>
+<Font>Sans Serif	12	50	0	0	0</Font>
+<TextColor>#000000</TextColor>
+<Background>#ffffff</Background>
+<Alpha>0</Alpha>
+<Angle>0</Angle>
+<AutoUpdate>1</AutoUpdate>
+<TeXOutput>0</TeXOutput>
+</Legend>
+</graph>
+</multiLayer>
+<open>1</open>

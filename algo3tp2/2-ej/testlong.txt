@@ -1,0 +1,120 @@
+7
+
+pee
+lee
+gee
+gez
+fez
+tre
+pre
+pes
+fzz
+zzz
+*
+fzz lee
+pes pre
+gez pre
+lee zzz
+gee pes
+
+free
+glee
+flee
+part
+cart
+care
+frre
+fare
+fret
+fart
+*
+fret fare
+glee free
+fart glee
+free fret
+cart flee
+
+music
+tusic
+tusky
+tuskc
+rusky
+husky
+musky
+kuskc
+kusoc
+kukoc
+*
+tusic rusky
+kukoc musky
+rusky kusoc
+kukoc husky
+kuskc kusoc
+
+donkey
+monkey
+fonkey
+ronkey
+ponkey
+pankey
+paskey
+baskey
+rasket
+basket
+*
+donkey rasket
+basket ponkey
+rasket monkey
+paskey basket
+fonkey pankey
+
+pancake
+mascake
+dancake
+mancake
+daycake
+daycare
+dalcare
+malcare
+malcree
+halcree
+*
+pancake daycare
+mancake malcare
+halcree mascake
+malcree daycake
+pancake halcree
+
+freebird
+bredbird
+fredbird
+breabird
+breanird
+creanird
+crealird
+crealirc
+creelirc
+creelyrc
+*
+creelyrc creanird
+breanird fredbird
+freebird creelirc
+breabird creelyrc
+creelird bredbird
+
+steelence
+freelance
+freelence
+fteelence
+creelence
+creelance
+cteelence
+steelance
+steepance
+creedence
+*
+creedence freelance
+steepance cteelence
+creedence fteelence
+freelance steepance
+steelence freelence

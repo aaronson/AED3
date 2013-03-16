@@ -1,0 +1,107 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/aaronson-algo3tp3/!svn/ver/42/src/jugadores
+END
+timer_alfabeta.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/aaronson-algo3tp3/!svn/ver/38/src/jugadores/timer_alfabeta.cpp
+END
+alfabeta.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/aaronson-algo3tp3/!svn/ver/17/src/jugadores/alfabeta.cpp
+END
+minimax.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/aaronson-algo3tp3/!svn/ver/30/src/jugadores/minimax.cpp
+END
+timer_minimax.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/aaronson-algo3tp3/!svn/ver/38/src/jugadores/timer_minimax.cpp
+END
+jfin1.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/aaronson-algo3tp3/!svn/ver/17/src/jugadores/jfin1.cpp
+END
+jfin2.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/aaronson-algo3tp3/!svn/ver/18/src/jugadores/jfin2.cpp
+END
+jfin3.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/aaronson-algo3tp3/!svn/ver/29/src/jugadores/jfin3.cpp
+END
+jfin4.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/aaronson-algo3tp3/!svn/ver/22/src/jugadores/jfin4.cpp
+END
+jfin5.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/aaronson-algo3tp3/!svn/ver/42/src/jugadores/jfin5.cpp
+END
+jug_labi.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/aaronson-algo3tp3/!svn/ver/1/src/jugadores/jug_labi.cpp
+END
+scorer1.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/aaronson-algo3tp3/!svn/ver/17/src/jugadores/scorer1.cpp
+END
+scorer2.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/aaronson-algo3tp3/!svn/ver/17/src/jugadores/scorer2.cpp
+END
+scorer3.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/aaronson-algo3tp3/!svn/ver/25/src/jugadores/scorer3.cpp
+END
+scorer4.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/aaronson-algo3tp3/!svn/ver/27/src/jugadores/scorer4.cpp
+END
+jug_wabi.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/aaronson-algo3tp3/!svn/ver/1/src/jugadores/jug_wabi.cpp
+END
+jugs_varios.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/aaronson-algo3tp3/!svn/ver/19/src/jugadores/jugs_varios.cpp
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/aaronson-algo3tp3/!svn/ver/30/src/jugadores/Makefile
+END
